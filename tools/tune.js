@@ -26,9 +26,10 @@
   const note = Object.assign(document.createElement("div"), { textContent: "Tell Claude the two codes." });
   note.style.cssText = "font-weight:500;font-size:12px;opacity:.6";
   panel.append(note);
-  addEventListener("load", () => {
+  const show = () => {
     document.body.append(panel);
     // show the red in use: turn a lid so the signal and dial light up
     document.querySelector('.lid[aria-label^="1"]')?.click();
-  });
+  };
+  if (document.readyState === "complete") show(); else addEventListener("load", show);
 })();

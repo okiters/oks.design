@@ -896,3 +896,8 @@ point(null);
 document.fonts.ready.then(drawInks);
 loadShapes();
 document.fonts.ready.then(() => setMode("idle", BOARDS.idle));
+
+// the local colour picker (tools/tune.js, never published): add ?tune to the address
+if (new URLSearchParams(location.search).has("tune")) {
+  document.head.append(Object.assign(document.createElement("script"), { src: "tools/tune.js" }));
+}
