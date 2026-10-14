@@ -1,0 +1,4 @@
+.vercel
+.DS_Store
+# Switzer (Fontshare) may be used but not passed on: kept on this Mac and on the live site only
+fonts/switzer-*

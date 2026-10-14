@@ -1,0 +1,746 @@
+@font-face { font-family: Switzer; src: url(../fonts/switzer-medium.woff) format("woff"); font-weight: 500; font-display: swap; }
+@font-face { font-family: Switzer; src: url(../fonts/switzer-semibold.woff) format("woff"); font-weight: 600; font-display: swap; }
+@font-face { font-family: Switzer; src: url(../fonts/switzer-bold.woff) format("woff"); font-weight: 700; font-display: swap; }
+/* hand-drawn display face for the numbers and the wordmark */
+@font-face { font-family: "Londrina Solid"; src: url(../fonts/londrina-solid-300.woff2) format("woff2"); font-weight: 300; font-display: swap; }
+@font-face { font-family: "Londrina Solid"; src: url(../fonts/londrina-solid-400.woff2) format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Londrina Solid"; src: url(../fonts/londrina-solid-900.woff2) format("woff2"); font-weight: 900; font-display: swap; }
+
+/* how far a lid has turned on its axle; registered so it animates and can drive the shadow */
+@property --turn { syntax: "<angle>"; inherits: true; initial-value: 0deg; }
+
+/* Print illustration: flat fills, hand-drawn ink outlines (js/site.js draws them),
+   solid ink shadows down and to the right, halftone dots for shade, paper grain. */
+:root {
+  /* the portfolio's colours, from personal-logo/oks-design/build.py */
+  --ink: #202327;
+  --cream: #f6f1e8;
+  --orange: #e4572e;
+  --blue: #7aa7ff;
+  --grey: #d9d6d0;      /* lids */
+  --grey-edge: #b9b3a8; /* a lid's thickness */
+  --bay: #ebe5d9;
+  --steel: #aeb4bb;
+  --flap: #34373c;
+
+  /* the device is drawn in design units, 1240 x 696 of them, seen straight from the front */
+  --u: min(calc((100vw - 120px) / 1260), calc((100svh - 90px) / 740), 1.3px);
+  --dw: 1240; /* the device's width in design units; the base under it matches */
+
+  /* halftone: ink dots on whatever is underneath */
+  --dots: radial-gradient(circle, var(--ink) calc(1.6 * var(--u)), transparent calc(1.7 * var(--u))) 0 0 / calc(7 * var(--u)) calc(7 * var(--u));
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+  margin: 0;
+  color: var(--ink);
+  font: 500 16px/1.4 Switzer, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  /* blue grid paper */
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cpath d='M64 0H0V64' fill='none' stroke='%23f6f1e8' stroke-opacity='.55' stroke-width='2'/%3E%3C/svg%3E") center / 64px 64px,
+    var(--blue);
+}
+
+/* paper grain over everything */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+  opacity: 0.35;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' seed='2'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .1 0 0 0 0 .1 0 0 0 .9 -.42'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+
+:focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; }
+
+/* the hand-drawn outlines and shadows js/site.js adds */
+.ink {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+.ink path { fill: none; stroke: var(--ink); stroke-linejoin: round; stroke-linecap: round; }
+.ink.fill path { fill: var(--ink); stroke: none; }
+
+.world {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.9s cubic-bezier(0.7, 0, 0.2, 1), opacity 0.9s cubic-bezier(0.7, 0, 0.2, 1);
+}
+body.entering .world { transform: scale(1.5); opacity: 0; }
+
+/* ---------- the device ---------- */
+
+/* the device fills the first screen; its base waits just below, a short scroll away */
+.fold {
+  flex: none;
+  width: 100%;
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+}
+/* lifted by half its shadow, so device and shadow sit centred together */
+.device-wrap { position: relative; translate: 0 calc(-11 * var(--u)); }
+/* its solid shadow, drawn by js as a filled ink shape */
+.device-shadow { position: absolute; inset: 0; transform: translate(calc(18 * var(--u)), calc(22 * var(--u))); }
+
+.device {
+  position: relative;
+  display: grid;
+  grid-template-columns: calc(640 * var(--u)) calc(360 * var(--u)) calc(136 * var(--u));
+  grid-template-rows: calc(52 * var(--u)) calc(284 * var(--u)) calc(264 * var(--u));
+  grid-template-areas:
+    "strip strip strip"
+    "lids screen controls"
+    "board screen controls";
+  gap: calc(20 * var(--u)) calc(24 * var(--u));
+  padding: calc(28 * var(--u));
+  border-radius: calc(40 * var(--u));
+  background: var(--cream);
+}
+
+.bay {
+  position: relative;
+  border-radius: calc(22 * var(--u));
+  background: var(--bay);
+}
+.bay.dark { background: var(--ink); }
+
+/* ---------- top strip: logo, a printed rule, two keys ---------- */
+
+.strip {
+  grid-area: strip;
+  display: flex;
+  align-items: center;
+  gap: calc(22 * var(--u));
+  padding: 0 calc(6 * var(--u));
+}
+
+.badge {
+  display: flex;
+  align-items: center;
+  gap: calc(12 * var(--u));
+  color: var(--ink);
+  text-decoration: none;
+}
+.badge img { display: block; height: calc(40 * var(--u)); width: auto; }
+
+/* OKS design: OKS black, design regular, as in the logo files */
+.wordmark {
+  font-family: "Londrina Solid", Switzer, sans-serif;
+  font-weight: 400;
+  font-size: calc(36 * var(--u));
+  line-height: 1;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  padding-top: calc(3 * var(--u));
+}
+.wordmark b { font-weight: 900; }
+
+.strip-rule { position: relative; flex: 1; height: calc(16 * var(--u)); }
+
+.keys { display: flex; gap: calc(16 * var(--u)); }
+
+.key {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: calc(10 * var(--u));
+  height: calc(38 * var(--u));
+  padding: 0 calc(20 * var(--u)) 0 calc(14 * var(--u));
+  border-radius: calc(19 * var(--u));
+  font-size: calc(16 * var(--u));
+  font-weight: 600;
+  background: var(--cream);
+  box-shadow: calc(4 * var(--u)) calc(5 * var(--u)) 0 var(--ink);
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+.key i {
+  width: calc(10 * var(--u));
+  height: calc(10 * var(--u));
+  border-radius: 50%;
+  background: var(--cream);
+  box-shadow: 0 0 0 calc(2.5 * var(--u)) var(--ink);
+  transition: background 0.2s;
+}
+/* pressed: the key sits down onto its shadow */
+.key:active, .key.on {
+  transform: translate(calc(4 * var(--u)), calc(5 * var(--u)));
+  box-shadow: 0 0 0 var(--ink);
+}
+.key.on i { background: var(--orange); }
+
+/* ---------- lids on axles ---------- */
+
+.lids {
+  --s: calc(100 * var(--u));   /* lid size */
+  --gx: calc(64 * var(--u));   /* gap between lids on an axle */
+  --gy: calc(36 * var(--u));   /* gap between the two axles */
+  --x0: calc((640 * var(--u) - 3 * var(--s) - 2 * var(--gx)) / 2);
+  --y0: calc(20 * var(--u));   /* top row, just under the shaded edge of the bay */
+  --r: calc(20 * var(--u));    /* corner radius */
+  --t: calc(12 * var(--u));    /* thickness */
+  grid-area: lids;
+}
+/* shade under the overhanging top edge of the bay */
+.lids::before {
+  content: "";
+  position: absolute;
+  left: calc(4 * var(--u));
+  right: calc(4 * var(--u));
+  top: calc(3 * var(--u));
+  height: calc(15 * var(--u));
+  border-radius: calc(18 * var(--u)) calc(18 * var(--u)) 0 0;
+  background: var(--dots);
+  opacity: 0.6;
+}
+
+.axle {
+  position: absolute;
+  left: calc(30 * var(--u));
+  right: calc(30 * var(--u));
+  top: calc(var(--y0) + var(--s) / 2 - 6 * var(--u) + (var(--row) - 1) * (var(--s) + var(--gy)));
+  height: calc(12 * var(--u));
+  border-radius: calc(6 * var(--u));
+  background: var(--steel);
+}
+/* a highlight along the bar */
+.axle::before {
+  content: "";
+  position: absolute;
+  left: calc(8 * var(--u));
+  right: calc(8 * var(--u));
+  top: calc(3 * var(--u));
+  height: calc(2.5 * var(--u));
+  border-radius: 99px;
+  background: var(--cream);
+}
+
+.bearing {
+  position: absolute;
+  top: calc(var(--y0) + var(--s) / 2 - 16 * var(--u) + (var(--row) - 1) * (var(--s) + var(--gy)));
+  width: calc(18 * var(--u));
+  height: calc(32 * var(--u));
+  border-radius: calc(5 * var(--u));
+  background: var(--ink);
+}
+.bearing::before {
+  content: "";
+  position: absolute;
+  left: calc(6 * var(--u));
+  top: calc(6 * var(--u));
+  bottom: calc(10 * var(--u));
+  width: calc(2.5 * var(--u));
+  border-radius: 99px;
+  background: var(--cream);
+}
+.bearing.left { left: calc(16 * var(--u)); }
+.bearing.right { right: calc(16 * var(--u)); }
+
+.lid {
+  position: absolute;
+  left: calc(var(--x0) + (var(--col) - 1) * (var(--s) + var(--gx)));
+  top: calc(var(--y0) + (var(--row) - 1) * (var(--s) + var(--gy)));
+  width: var(--s);
+  height: var(--s);
+  perspective: calc(600 * var(--u));
+  --turn: 0deg;
+  transition: --turn 0.5s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+.lid.blank { cursor: default; }
+
+/* collars where the axle meets the lid */
+.lid::before, .lid::after {
+  content: "";
+  position: absolute;
+  top: calc(50% - 10 * var(--u));
+  width: calc(9 * var(--u));
+  height: calc(20 * var(--u));
+  border-radius: calc(2 * var(--u));
+  background: var(--ink);
+}
+.lid::before { left: calc(-9 * var(--u)); }
+.lid::after { right: calc(-9 * var(--u)); }
+
+/* the solid shadow in the bay narrows as the lid turns edge-on */
+.lid-shadow {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--r);
+  background: var(--ink);
+  transform: translate(calc(7 * var(--u)), calc(9 * var(--u))) scaleY(cos(var(--turn)));
+}
+
+.lid-body {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--turn));
+}
+
+/* thickness: the same rounded shape stacked through the depth, inked at both ends */
+.lid-slice {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--r);
+  background: var(--grey-edge);
+  transform: translateZ(var(--z));
+}
+.lid-slice.end { background: var(--ink); }
+
+.lid-front, .lid-back {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--r);
+  background: var(--grey);
+  backface-visibility: hidden;
+  display: grid;
+  place-items: center;
+}
+.lid-front { transform: translateZ(calc(var(--t) / 2)); }
+.lid-back { transform: rotateX(180deg) translateZ(calc(var(--t) / 2)); }
+
+/* halftone shade on the lower part of a face */
+/* halftone shade: two rows of dots along the bottom of a face, clipped to its corners */
+.lid-shade {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--r);
+  background: radial-gradient(circle, var(--ink) calc(1.6 * var(--u)), transparent calc(1.7 * var(--u)))
+    0 calc(100% - 1 * var(--u)) / calc(7 * var(--u)) calc(7 * var(--u));
+  -webkit-mask: linear-gradient(to top, #000 calc(15 * var(--u)), transparent 0);
+  mask: linear-gradient(to top, #000 calc(15 * var(--u)), transparent 0);
+  opacity: 0.45;
+}
+
+.lid-num {
+  position: relative;
+  font-family: "Londrina Solid", Switzer, sans-serif;
+  font-weight: 900;
+  font-size: calc(62 * var(--u));
+  line-height: 1;
+  color: var(--orange);
+}
+
+.lid-art { position: relative; width: 100%; height: 100%; display: grid; place-items: center; }
+.lid-art img { width: 60%; height: 60%; object-fit: contain; }
+.lid-art img.icon { width: 42%; height: 42%; }
+
+.lid:focus-visible { outline: none; }
+.lid:focus-visible .lid-front, .lid:focus-visible .lid-back { outline: calc(3 * var(--u)) solid var(--orange); outline-offset: calc(5 * var(--u)); }
+
+/* motion marks beside a lid that moves, as in a print illustration */
+.lid-marks {
+  position: absolute;
+  left: calc(-24 * var(--u));
+  right: calc(-24 * var(--u));
+  top: calc(-14 * var(--u));
+  height: calc(40 * var(--u));
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.lid-marks .ink path { stroke-width: calc(3 * var(--u)); }
+
+/* hover is only a hint: the lid tips back, its edge shows, it twitches */
+@media (hover: hover) {
+  .lid.project:not(.open):not(.social):hover { --turn: 26deg; }
+  .lid.project:not(.open):not(.social):hover .lid-marks { opacity: 1; }
+  /* on contact, a lid with a link tips the other way, showing it moves */
+  .lid.linked:not(.chosen):hover { --turn: 156deg; }
+  .lid.linked:hover .lid-marks { opacity: 1; }
+}
+.lid.open {
+  --turn: 180deg;
+  transition: --turn 1s cubic-bezier(0.5, -0.15, 0.25, 1.15);
+}
+.lid.closing { transition: --turn 0.75s cubic-bezier(0.5, 0, 0.3, 1.15); }
+/* contact: every lid turns over in a wave */
+.lid.social {
+  --turn: 180deg;
+  transition: --turn 1s cubic-bezier(0.5, -0.15, 0.25, 1.15);
+}
+.lid.linked { cursor: pointer; }
+/* about: the lid whose facts are on the board stays tipped back */
+.lid.chosen { --turn: 150deg; }
+.lid.leaving { transition: --turn 0.85s cubic-bezier(0.5, 0, 0.3, 1.15); }
+
+/* a lid turning pulls the blank lid on the same axle along a little */
+.lid.nudge { animation: nudge 1s cubic-bezier(0.3, 0, 0.3, 1); }
+.lid.nudge .lid-marks { animation: marks 1s; }
+@keyframes nudge {
+  30% { --turn: 28deg; }
+  65% { --turn: -6deg; }
+  100% { --turn: 0deg; }
+}
+@keyframes marks { 0%, 60% { opacity: 1; } 100% { opacity: 0; } }
+
+/* ---------- split-flap board ---------- */
+
+.board {
+  --cw: calc(30 * var(--u));
+  --ch: calc(40 * var(--u));
+  grid-area: board;
+  display: grid;
+  grid-template-columns: auto;
+  align-content: center;
+  justify-content: center;
+  row-gap: calc(4 * var(--u));
+  color: var(--cream);
+  text-decoration: none;
+}
+.board[href] { cursor: pointer; }
+/* a little more air between the three groups of rows */
+.board-row.gap-before { margin-top: calc(10 * var(--u)); }
+
+.board-row { display: flex; gap: calc(4 * var(--u)); }
+
+.flap {
+  position: relative;
+  width: var(--cw);
+  height: var(--ch);
+  perspective: calc(160 * var(--u));
+  font-weight: 700;
+  font-size: calc(25 * var(--u));
+}
+
+.flap-half, .flap-leaf {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: calc(50% - 1 * var(--u));
+  overflow: hidden;
+  backface-visibility: hidden;
+  background: var(--flap);
+}
+.is-up { top: 0; border-radius: calc(4 * var(--u)) calc(4 * var(--u)) 0 0; transform-origin: bottom; }
+.is-down { bottom: 0; border-radius: 0 0 calc(4 * var(--u)) calc(4 * var(--u)); transform-origin: top; }
+
+.flap b {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: var(--ch);
+  line-height: var(--ch);
+  text-align: center;
+  font-weight: inherit;
+}
+.is-up b { top: 0; }
+.is-down b { bottom: 0; }
+
+/* ---------- dot screen ---------- */
+
+.screen {
+  grid-area: screen;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(8 * var(--u));
+}
+
+/* printed scales either side of the glass */
+.scale { position: relative; width: calc(12 * var(--u)); height: calc(520 * var(--u)); }
+
+.screen-glass {
+  position: relative;
+  width: calc(304 * var(--u));
+  height: calc(540 * var(--u));
+  border-radius: calc(12 * var(--u));
+  background: #17181b;
+  overflow: hidden;
+}
+.screen-glass canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.screen-glass video { display: none; }
+
+/* ---------- controls: a dial that points at the open project, a grille, a signal light ---------- */
+
+.controls {
+  grid-area: controls;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(10 * var(--u)) 0 calc(6 * var(--u));
+}
+
+.dial {
+  position: relative;
+  width: calc(120 * var(--u));
+  height: calc(124 * var(--u));
+  --angle: -80deg;
+}
+.dial-tick {
+  position: absolute;
+  left: 50%;
+  top: calc(70 * var(--u));
+  width: calc(14 * var(--u));
+  margin-left: calc(-7 * var(--u));
+  text-align: center;
+  font-size: calc(12 * var(--u));
+  font-weight: 700;
+  line-height: 1;
+  transform: rotate(var(--a)) translateY(calc(-62 * var(--u))) rotate(calc(-1 * var(--a)));
+  transition: color 0.3s;
+}
+.dial-tick.on { color: var(--orange); }
+.dial-knob {
+  position: absolute;
+  left: 50%;
+  top: calc(70 * var(--u));
+  width: calc(76 * var(--u));
+  height: calc(76 * var(--u));
+  margin: calc(-38 * var(--u)) 0 0 calc(-38 * var(--u));
+  border-radius: 50%;
+  background: var(--cream);
+  box-shadow: calc(6 * var(--u)) calc(8 * var(--u)) 0 var(--ink);
+}
+.dial-knob::before { /* halftone shade on its lower part, kept inside the circle */
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--dots);
+  -webkit-mask: linear-gradient(to top, #000 34%, transparent 0);
+  mask: linear-gradient(to top, #000 34%, transparent 0);
+  opacity: 0.45;
+}
+.dial-pointer {
+  position: absolute;
+  inset: 0;
+  transform: rotate(var(--angle));
+  transition: transform 0.9s cubic-bezier(0.4, 1.4, 0.4, 1);
+}
+.dial-pointer::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: calc(8 * var(--u));
+  width: calc(5 * var(--u));
+  height: calc(20 * var(--u));
+  margin-left: calc(-2.5 * var(--u));
+  border-radius: 99px;
+  background: var(--ink);
+}
+
+.grille {
+  position: relative;
+  width: calc(96 * var(--u));
+  height: calc(250 * var(--u));
+  border-radius: calc(16 * var(--u));
+  background: var(--dots), var(--bay);
+}
+
+.signal {
+  display: flex;
+  align-items: center;
+  gap: calc(9 * var(--u));
+  font-size: calc(11 * var(--u));
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.signal-led {
+  width: calc(12 * var(--u));
+  height: calc(12 * var(--u));
+  border-radius: 50%;
+  background: var(--cream);
+  box-shadow: 0 0 0 calc(3 * var(--u)) var(--ink);
+  transition: background 0.3s;
+}
+.device.playing .signal-led { background: var(--orange); }
+
+/* the base under the device: rounded on top, running into the bottom of the page */
+.base {
+  position: relative;
+  flex: none;
+  width: calc(var(--dw) * var(--u));
+  min-height: calc(52 * var(--u));
+  margin-top: calc(8 * var(--u)); /* fully out of sight until you scroll */
+  display: flex;
+  align-items: center;
+  padding: calc(4 * var(--u)) calc(34 * var(--u)) 0;
+  border-radius: calc(26 * var(--u)) calc(26 * var(--u)) 0 0;
+  background: var(--cream);
+  box-shadow: calc(14 * var(--u)) calc(14 * var(--u)) 0 var(--ink);
+}
+.base-text {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: calc(20 * var(--u));
+  font-size: max(10px, calc(11 * var(--u)));
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  line-height: 1;
+  text-transform: uppercase;
+  color: rgb(32 35 39 / 0.62);
+}
+.base a { color: var(--ink); text-decoration: none; }
+.base a:hover { color: var(--orange); }
+.base .keep { white-space: nowrap; }
+/* a small solid circle between the two countries */
+.base .dot {
+  display: inline-block;
+  width: 0.4em;
+  height: 0.4em;
+  margin: 0 0.3em;
+  border-radius: 50%;
+  background: currentColor;
+  vertical-align: 0.15em;
+}
+
+.said {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- zooming into a project ---------- */
+
+.portal {
+  position: fixed;
+  z-index: 40;
+  overflow: hidden;
+}
+.portal[hidden] { display: none; }
+
+.portal-mark { position: absolute; }
+.portal-mono, .portal-color { position: absolute; inset: 0; display: grid; place-items: center; }
+.portal-mono img, .portal-color img { width: 100%; height: 100%; object-fit: contain; }
+.portal-color svg { width: 100%; height: 100%; overflow: visible; }
+.portal-color { opacity: 0; }
+
+.portal-exit {
+  position: absolute;
+  top: 28px;
+  left: 36px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--portal-ink, var(--ink));
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.portal.arrived .portal-exit { opacity: 1; }
+.portal-exit::before { content: "\2190  "; }
+
+/* the logos' loading loops */
+.loop-linpile .portal-color path { animation: pile 2.6s cubic-bezier(0.3, 1.3, 0.5, 1) infinite both; }
+.loop-linpile .portal-color path:nth-of-type(2) { animation-delay: 0.14s; }
+.loop-linpile .portal-color path:nth-of-type(3) { animation-delay: 0.28s; }
+.loop-linpile .portal-color path:nth-of-type(4) { animation-delay: 0.42s; }
+@keyframes pile {
+  0% { transform: translateY(-140px); opacity: 0; }
+  14% { transform: translateY(0); opacity: 1; }
+  74% { transform: translateY(0); opacity: 1; }
+  88%, 100% { transform: translateY(30px); opacity: 0; }
+}
+
+.loop-wrapchat .portal-color svg { animation: wrap 2.2s cubic-bezier(0.6, 0, 0.3, 1) infinite; }
+@keyframes wrap {
+  0%, 20% { transform: perspective(600px) rotateY(0deg); }
+  70%, 100% { transform: perspective(600px) rotateY(360deg); }
+}
+
+@property --sweep { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+.loop-bramblewick .portal-color img {
+  -webkit-mask: conic-gradient(#000 var(--sweep), transparent 0);
+  mask: conic-gradient(#000 var(--sweep), transparent 0);
+  animation: grow 2.8s cubic-bezier(0.5, 0, 0.4, 1) infinite;
+}
+@keyframes grow {
+  0% { --sweep: 0deg; opacity: 1; }
+  60%, 85% { --sweep: 360deg; opacity: 1; }
+  100% { --sweep: 360deg; opacity: 0; }
+}
+
+.loop-kitchen-guide .portal-color path { animation: search 1.8s linear infinite; }
+@keyframes search {
+  0%, 100% { transform: translate(0, -3px); }
+  25% { transform: translate(3px, 0); }
+  50% { transform: translate(0, 3px); }
+  75% { transform: translate(-3px, 0); }
+}
+
+/* ---------- cursor: an inked drop whose point is the click spot ---------- */
+
+.cursor {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 60;
+  pointer-events: none;
+  width: 64px;
+  height: 64px;
+  border-radius: 0 50% 50% 50%;
+  transform-origin: 0 0;
+  display: grid;
+  place-items: center;
+  background: var(--ink);
+  color: var(--cream);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  box-shadow: 4px 5px 0 rgb(32 35 39 / 0.35);
+  transform: translate(var(--x, -100px), var(--y, -100px)) scale(0);
+  transition: transform 0.25s cubic-bezier(0.3, 1.4, 0.5, 1), background 0.25s;
+}
+.cursor.show { transform: translate(var(--x), var(--y)) scale(1); }
+.cursor.enter, .cursor.write { background: var(--orange); box-shadow: 4px 5px 0 var(--ink); }
+
+@media (pointer: fine) {
+  html.js .lid.project, html.js .lid.linked, html.js .board[href] { cursor: none; }
+}
+
+/* ---------- phones: the device stands upright, the lids at the bottom within thumb reach ---------- */
+
+@media (max-width: 860px), (max-aspect-ratio: 1/1) {
+  :root { --u: min(calc((100vw - 40px) / 700), 1px); --dw: 696; }
+  body { overflow-y: auto; }
+  .fold { padding: 18px 0; }
+  .device {
+    grid-template-columns: calc(360 * var(--u)) calc(256 * var(--u));
+    grid-template-rows: calc(52 * var(--u)) calc(568 * var(--u)) calc(264 * var(--u)) calc(284 * var(--u));
+    grid-template-areas: "strip strip" "screen controls" "board board" "lids lids";
+  }
+  /* the base: its text in centred lines */
+  .base { padding: calc(20 * var(--u)) calc(24 * var(--u)) calc(26 * var(--u)); }
+  .base-text {
+    flex-direction: column;
+    align-items: center;
+    gap: calc(16 * var(--u));
+    font-size: max(10px, calc(15 * var(--u)));
+    letter-spacing: 0.14em;
+    line-height: 1.5;
+    text-align: center;
+    text-wrap: balance;
+  }
+  .controls { padding: calc(30 * var(--u)) 0 calc(14 * var(--u)); }
+  .dial { transform: scale(1.3); transform-origin: top; }
+  .grille { width: calc(150 * var(--u)); height: calc(230 * var(--u)); }
+  .signal { font-size: calc(14 * var(--u)); }
+  .key { font-size: calc(20 * var(--u)); height: calc(46 * var(--u)); }
+  .badge img { height: calc(46 * var(--u)); }
+  .wordmark { font-size: calc(40 * var(--u)); }
+  .portal-exit { top: 20px; left: 20px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lid, .lid.open, .lid.closing, .lid.social, .lid.leaving { transition-duration: 0.01s; }
+  .lid.nudge, .lid.nudge .lid-marks, [class*="loop-"] .portal-color svg, [class*="loop-"] .portal-color img, [class*="loop-"] .portal-color path { animation: none !important; }
+}

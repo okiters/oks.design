@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OKS design</title>
+<meta name="description" content="Linpile, WrapChat, Kitchen Guide and Bramblewick, designed and built by OKS design.">
+<meta name="theme-color" content="#7aa7ff">
+<link rel="icon" href="img/logos/oks-hand.svg" type="image/svg+xml">
+<link rel="preload" href="fonts/switzer-bold.woff" as="font" type="font/woff" crossorigin>
+<link rel="preload" href="fonts/londrina-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+
+<main class="world">
+  <div class="fold">
+  <div class="device-wrap">
+  <div class="device-shadow"></div>
+  <div class="device">
+
+    <header class="strip">
+      <a class="badge" href="./" aria-label="OKS design, home"><img src="img/logos/oks-hand.svg" alt=""><span class="wordmark"><b>OKS</b> design</span></a>
+      <span class="strip-rule" aria-hidden="true"></span>
+      <nav class="keys">
+        <button type="button" class="key" data-mode="contact"><i></i>contact</button>
+        <button type="button" class="key" data-mode="about"><i></i>about</button>
+      </nav>
+    </header>
+
+    <section class="bay lids" aria-label="Projects">
+      <!-- axles, links and lids come from js/site.js -->
+    </section>
+
+    <a class="bay dark board" aria-hidden="true"></a>
+
+    <div class="bay dark screen">
+      <span class="scale left" aria-hidden="true"></span>
+      <div class="screen-glass">
+        <canvas></canvas>
+        <video muted playsinline loop preload="none"></video>
+      </div>
+      <span class="scale right" aria-hidden="true"></span>
+    </div>
+
+    <div class="controls" aria-hidden="true">
+      <div class="dial">
+        <span class="dial-tick" style="--a:-45deg">1</span>
+        <span class="dial-tick" style="--a:-15deg">2</span>
+        <span class="dial-tick" style="--a:15deg">3</span>
+        <span class="dial-tick" style="--a:45deg">4</span>
+        <span class="dial-knob"><span class="dial-pointer"></span></span>
+      </div>
+      <div class="grille"></div>
+      <div class="signal"><span class="signal-led"></span><span class="signal-text">signal</span></div>
+    </div>
+
+
+  </div>
+  </div>
+  </div>
+
+  <footer class="base">
+    <div class="base-text">
+      <span>OKS design · <span class="keep">Özge Kıter Sterl</span> · <span class="keep"><span lang="tr">Türkiye</span> <i class="dot" aria-hidden="true"></i> Germany</span></span>
+      <span>© 2026 · <a href="imprint.html">imprint</a> · <a href="privacy.html">privacy</a></span>
+    </div>
+  </footer>
+  <p class="said" aria-live="polite"></p>
+</main>
+
+<div class="portal" hidden>
+  <div class="portal-mark"></div>
+  <button type="button" class="portal-exit">back</button>
+</div>
+
+<div class="cursor" aria-hidden="true"><span></span></div>
+
+<script src="js/site.js"></script>
+</body>
+</html>
