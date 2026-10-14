@@ -55,7 +55,7 @@ const BLANKS = [
 
 // whole boards, row by row: name, then two groups of two
 const BOARDS = {
-  idle: ["Welcome to my", "portfolio!", "", "Pick a project", "to examine."],
+  idle: ["", "Welcome to my", "portfolio", "Pick a project", "to examine."],
   about: ["I design and", "build my own", "digital products,", "and yours if you", "want me to."],
   contact: ["Say hello", "There are", "several ways", "to reach me.", ""],
 };
