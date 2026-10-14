@@ -539,7 +539,7 @@ const SOCIALS = [
 const FACTS = [
   { id: "map", label: "Where I am", lines: ["BASED IN", "IZMIR, TÜRKİYE", "BERLIN, GERMANY", "", ""] },
   { id: "disciplines", label: "What I do", lines: ["WHAT I DO", "BRAND IDENTITY", "APP DESIGN", "WEB DESIGN", "CODE & MOTION"] },
-  { id: "tools", label: "Tools", lines: ["TOOLS", "FIGMA, PHOTOSHOP", "SWIFT, XCODE", "CLAUDE, SUPABASE", "VERCEL, SUNO"] },
+  { id: "tools", label: "Tools", lines: ["TOOLS", "FIGMA/PHOTOSHOP", "ILLUSTRATOR/XCODE", "VS CODE/CLAUDE", "SUPABASE/VERCEL"] },
   { id: "education", label: "Education", lines: ["EDUCATION", "M.ARCH, UPC", "BARCELONA 2022-23", "B.ARCH, IYTE", "IZMIR 2016-21"] },
   { id: "languages", label: "Languages", lines: ["LANGUAGES", "TURKISH   NATIVE", "ENGLISH   C1", "GERMAN    A2", "AND LEARNING"] },
   { id: "availability", label: "Availability", signal: true,
