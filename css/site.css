@@ -15,8 +15,8 @@
   /* the portfolio's colours, from personal-logo/oks-design/build.py */
   --ink: #202327;
   --cream: #f6f1e8;
-  --orange: #e4572e;
-  --blue: #7aa7ff;
+  --accent: #3a72a0; /* accent: cobalt blue, chosen 14 Oct 2026 (option 3, deepened from #437fad so the lid numbers read). Earlier: orange #e4572e, then reds on trial */
+  --ground: #c49797; /* the dusty pink grid paper (was blue #7aa7ff) */
   --grey: #d9d6d0;      /* lids */
   --grey-edge: #b9b3a8; /* a lid's thickness */
   --bay: #ebe5d9;
@@ -44,7 +44,7 @@ body {
   /* blue grid paper */
   background:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cpath d='M64 0H0V64' fill='none' stroke='%23f6f1e8' stroke-opacity='.55' stroke-width='2'/%3E%3C/svg%3E") center / 64px 64px,
-    var(--blue);
+    var(--ground);
 }
 
 /* paper grain over everything */
@@ -60,7 +60,7 @@ body::after {
 
 button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
 
-:focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 
 /* the hand-drawn outlines and shadows js/site.js adds */
 .ink {
@@ -181,7 +181,7 @@ body.entering .world { transform: scale(1.5); opacity: 0; }
   transform: translate(calc(4 * var(--u)), calc(5 * var(--u)));
   box-shadow: 0 0 0 var(--ink);
 }
-.key.on i { background: var(--orange); }
+.key.on i { background: var(--accent); }
 
 /* ---------- lids on axles ---------- */
 
@@ -332,7 +332,7 @@ body.entering .world { transform: scale(1.5); opacity: 0; }
   font-weight: 900;
   font-size: calc(62 * var(--u));
   line-height: 1;
-  color: var(--orange);
+  color: var(--accent);
 }
 
 .lid-art { position: relative; width: 100%; height: 100%; display: grid; place-items: center; }
@@ -340,7 +340,7 @@ body.entering .world { transform: scale(1.5); opacity: 0; }
 .lid-art img.icon { width: 42%; height: 42%; }
 
 .lid:focus-visible { outline: none; }
-.lid:focus-visible .lid-front, .lid:focus-visible .lid-back { outline: calc(3 * var(--u)) solid var(--orange); outline-offset: calc(5 * var(--u)); }
+.lid:focus-visible .lid-front, .lid:focus-visible .lid-back { outline: calc(3 * var(--u)) solid var(--accent); outline-offset: calc(5 * var(--u)); }
 
 /* motion marks beside a lid that moves, as in a print illustration */
 .lid-marks {
@@ -494,7 +494,7 @@ body.entering .world { transform: scale(1.5); opacity: 0; }
   transform: rotate(var(--a)) translateY(calc(-62 * var(--u))) rotate(calc(-1 * var(--a)));
   transition: color 0.3s;
 }
-.dial-tick.on { color: var(--orange); }
+.dial-tick.on { color: var(--accent); }
 .dial-knob {
   position: absolute;
   left: 50%;
@@ -559,7 +559,7 @@ body.entering .world { transform: scale(1.5); opacity: 0; }
   box-shadow: 0 0 0 calc(3 * var(--u)) var(--ink);
   transition: background 0.3s;
 }
-.device.playing .signal-led { background: var(--orange); }
+.device.playing .signal-led { background: var(--accent); }
 
 /* the base under the device: rounded on top, running into the bottom of the page */
 .base {
@@ -589,7 +589,7 @@ body.entering .world { transform: scale(1.5); opacity: 0; }
   color: rgb(32 35 39 / 0.62);
 }
 .base a { color: var(--ink); text-decoration: none; }
-.base a:hover { color: var(--orange); }
+.base a:hover { color: var(--accent); }
 .base .keep { white-space: nowrap; }
 /* a small solid circle between the two countries */
 .base .dot {
@@ -701,7 +701,7 @@ body.entering .world { transform: scale(1.5); opacity: 0; }
   transition: transform 0.25s cubic-bezier(0.3, 1.4, 0.5, 1), background 0.25s;
 }
 .cursor.show { transform: translate(var(--x), var(--y)) scale(1); }
-.cursor.enter, .cursor.write { background: var(--orange); box-shadow: 4px 5px 0 var(--ink); }
+.cursor.enter, .cursor.write { background: var(--accent); box-shadow: 4px 5px 0 var(--ink); }
 
 @media (pointer: fine) {
   html.js .lid.project, html.js .lid.linked, html.js .board[href] { cursor: none; }

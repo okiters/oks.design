@@ -5,7 +5,7 @@ Run: python3 tools/about-video.py [source.mov]   (default ~/Downloads/IMG_8125.m
 
 The source is a 4.8 s phone clip of Özge waving. Every frame is cut out with Apple's
 person segmentation (tools/person-mask.swift), tinted from dark brown through the
-screen's orange to a pale peach, faded out towards the bottom, and trimmed to a loop:
+screen's blue to a pale tint, faded out towards the bottom, and trimmed to a loop:
 frames 8 to 105, whose last eight frames melt into the first eight. Needs ffmpeg,
 Pillow, numpy and Swift (Xcode's command line tools).
 """
@@ -24,8 +24,8 @@ SRC = Path(sys.argv[1] if len(sys.argv) > 1 else Path.home() / "Downloads/IMG_81
 START, END, BLEND = 8, 105, 8  # loop points, found by comparing every frame pair
 W, H = 360, 640
 
-# dark brown -> the screen's orange -> pale peach
-STOPS = np.array([[0.0, 0x30, 0x10, 0x08], [0.5, 0xE4, 0x57, 0x2E], [1.0, 0xFF, 0xD8, 0xBE]], np.float32)
+# dark brown -> the screen's red -> pale peach
+STOPS = np.array([[0.0, 0x0C, 0x1A, 0x28], [0.5, 0x3A, 0x72, 0xA0], [1.0, 0xD8, 0xE6, 0xF4]], np.float32)
 
 
 def tone(t):

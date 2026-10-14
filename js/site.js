@@ -21,7 +21,7 @@ const PROJECTS = [
   {
     id: "wrapchat", n: 2, col: 3, row: 1,
     name: "WrapChat",
-    about: "Your chats, read and wrapped",
+    about: "A mobile app that analyses chats",
     skills: ["UX writing", "AI prompt design"],
     bg: "#181F4E", ink: "#EDE8DC",
     video: "video/wrapchat.mp4", start: 8,
@@ -39,7 +39,7 @@ const PROJECTS = [
   {
     id: "bramblewick", n: 4, col: 3, row: 2,
     name: "Bramblewick",
-    about: "A story game with an AI Keeper",
+    about: "Role-playing game with an AI Keeper",
     skills: ["Game design", "Worldbuilding"],
     bg: "#241810", ink: "#E8DBBD",
     emblem: "img/logos/bramblewick-color.webp",
@@ -55,7 +55,7 @@ const BLANKS = [
 
 // whole boards, row by row: name, then two groups of two
 const BOARDS = {
-  idle: ["", "Welcome to my", "portfolio", "Pick a project", "to examine."],
+  idle: ["Welcome", "to my", "portfolio", "Pick a project", "to examine."],
   about: ["I design and", "build my own", "digital products,", "and yours if you", "want me to."],
   contact: ["Say hello", "There are", "several ways", "to reach me.", ""],
 };
@@ -178,7 +178,9 @@ const DOTS_Y = 180;
 const DRAW_X = 54;
 const DRAW_Y = 96;
 const OFF = "#25292e";
-const GLOW = "rgb(228 87 46)";
+// the screen draws in the page's accent, read from --accent so the two never drift apart
+let GLOW = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#3a72a0";
+addEventListener("accentchange", () => { GLOW = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim(); });
 
 class Screen {
   constructor(el) {
@@ -284,7 +286,7 @@ class Screen {
   }
 }
 
-/* what the screen draws when there is no reel, in the orange of an LED */
+/* what the screen draws when there is no reel, in the accent colour, like an LED */
 
 let HAND = null; // Path2D list, from img/logos/oks-hand.svg
 let KITCHEN = null; // { check, glass }

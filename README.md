@@ -7,13 +7,13 @@ sketches (flat, pixel, print; deleted after the choice, 13 Oct 2026).
 - Hand-drawn ink outlines: `ink()` in js/site.js traces each one as a slightly
   uneven path and redraws it when the size changes.
 - Solid ink shadows down and to the right, halftone dots for shade.
-- Blue grid paper and a light paper grain behind and over everything.
+- Dusty pink grid paper and a light paper grain behind and over everything.
 - Lid numbers and the "OKS design" wordmark in the top strip are set in Londrina
   Solid (OKS 900, design 400), a free Google font saved in `fonts/`. The
   rest of the type is Switzer.
 
 - The top strip holds the hand logo, a printed rule and two keys (contact, about).
-- The lids bay holds four light grey project lids with orange numbers, and two plain
+- The lids bay holds four light grey project lids with blue numbers, and two plain
   blank lids, on two axles with no vertical links.
   Hover tips a lid back as a hint, with motion marks beside it. The first click
   turns it over to the monochrome logo, plays the reel on the dot screen, flips
@@ -33,7 +33,7 @@ sketches (flat, pixel, print; deleted after the choice, 13 Oct 2026).
   Its top corners are rounded and it runs into the bottom of the page. On
   it: OKS design · Özge Kıter Sterl · Türkiye ● Germany, © 2026, and the links to
   `imprint.html` and `privacy.html` (styled by `css/page.css`). Nothing on the site
-  is underlined: links are full ink or bold and turn orange on hover.
+  is underlined: links are full ink or bold and turn blue on hover.
 - The screen is a mesh of 101 × 180 dots. The reels play at full sharpness behind
   it, so their text stays readable.
   The drawings with no reel light whole dots. The controls column holds the dial,
