@@ -81,8 +81,7 @@ Leave the mail records alone: hello@ and support@oks.design depend on them.
 
 - The board texts are drafts.
 - `SOCIALS` has Instagram and LinkedIn with no `url` yet: their lids turn but don't link.
-- The imprint is missing the postal address (shown in orange), which German law
-  requires. Both legal pages are drafts, not checked by a lawyer.
+- The legal pages are drafts, not checked by a lawyer.
 - Kitchen Guide has no reel, real background colour or details yet.
 - Linpile (https://linpile.com/), WrapChat (https://wrapchatapp.com/) and
   Bramblewick (https://www.bramblewick.world/) have a `url`, added 2026-10-13.
